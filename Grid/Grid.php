@@ -303,6 +303,7 @@ class Grid implements GridInterface
      */
     public function __construct($container, $id = '', GridConfigInterface $config = null)
     {
+        // @todo: why the whole container is injected?
         $this->container = $container;
         $this->config = $config;
 
@@ -1175,7 +1176,7 @@ class Grid implements GridInterface
     /**
      * Returns Grid Columns.
      *
-     * @return Column\Column[]|Columns
+     * @return Column[]|Columns
      */
     public function getColumns()
     {
@@ -1260,10 +1261,10 @@ class Grid implements GridInterface
     /**
      * Add a tweak.
      *
-     * @param string title title of the tweak
-     * @param array $tweak array('filters' => array, 'order' => 'colomunId|order', 'page' => integer, 'limit' => integer, 'export' => integer, 'massAction' => integer)
-     * @param string id id of the tweak matching the regex ^[0-9a-zA-Z_\+-]+
-     * @param string group group of the tweak
+     * @param string $title title of the tweak
+     * @param array  $tweak array('filters' => array, 'order' => 'colomunId|order', 'page' => integer, 'limit' => integer, 'export' => integer, 'massAction' => integer)
+     * @param string $id    id of the tweak matching the regex ^[0-9a-zA-Z_\+-]+
+     * @param string $group group of the tweak
      *
      * @return self
      */
@@ -1305,6 +1306,7 @@ class Grid implements GridInterface
     {
         return (array) $this->get('tweaks');
     }
+
     /**
      * Returns a tweak.
      *
@@ -1344,6 +1346,7 @@ class Grid implements GridInterface
 
         return isset($tweaks[$group]) ? $tweaks[$group] : -1;
     }
+
     /**
      * Adds Row Action.
      *
@@ -1373,7 +1376,7 @@ class Grid implements GridInterface
     /**
      * Sets template for export.
      *
-     * @param Export $template
+     * @param \Twig_Template|string $template
      *
      * @throws \Exception
      *
@@ -1384,7 +1387,7 @@ class Grid implements GridInterface
         if ($template !== null) {
             if ($template instanceof \Twig_Template) {
                 $template = '__SELF__' . $template->getTemplateName();
-            } elseif (!is_string($template) && $template === null) {
+            } elseif (!is_string($template)) {
                 throw new \Exception('Unable to load template');
             }
 
@@ -1398,7 +1401,7 @@ class Grid implements GridInterface
     /**
      * Returns template.
      *
-     * @return Twig_Template
+     * @return \Twig_Template|string
      */
     public function getTemplate()
     {
@@ -1424,7 +1427,7 @@ class Grid implements GridInterface
     /**
      * Returns exports.
      *
-     * @return Export[]
+     * @return ExportInterface[]
      */
     public function getExports()
     {
@@ -1479,7 +1482,7 @@ class Grid implements GridInterface
     /**
      * Sets Route URL.
      *
-     * @param string routeUrl
+     * @param string $routeUrl
      *
      * @return self
      */
@@ -1517,8 +1520,8 @@ class Grid implements GridInterface
     /**
      * Set value for filters.
      *
-     * @param array Hash of columnName => initValue
-     * @param bool permanent filters ?
+     * @param array $filters   Hash of columnName => initValue
+     * @param bool  $permanent filters ?
      *
      * @return self
      */
@@ -1838,6 +1841,8 @@ class Grid implements GridInterface
                 }
             }
         }
+
+        return false;
     }
 
     /**
@@ -1902,7 +1907,7 @@ class Grid implements GridInterface
     /**
      * Adds Column Extension - internal helper.
      *
-     * @param Column\Column $extension
+     * @param Column $extension
      *
      * @return self
      */
@@ -2077,11 +2082,11 @@ class Grid implements GridInterface
     /**
      * Default delete action.
      *
-     * @param $ids
+     * @param array $ids
      */
-    public function deleteAction($ids, $actionAllKeys)
+    public function deleteAction(array $ids)
     {
-        $this->source->delete($ids, $actionAllKeys);
+        $this->source->delete($ids);
     }
 
     /**
